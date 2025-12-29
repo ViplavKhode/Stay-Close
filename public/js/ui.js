@@ -112,9 +112,10 @@ class UI {
 
             // Calculate distance for display in panel
             let distanceStr = '';
-            if (!isMe && myState) {
+            // user is a Leaflet Marker, so we must use getLatLng()
+            if (!isMe && myState && user.getLatLng) {
                 const myLatLng = L.latLng(myState.latitude, myState.longitude);
-                const userLatLng = L.latLng(user.latitude, user.longitude);
+                const userLatLng = user.getLatLng(); // Correctly get position from marker
                 const dist = myLatLng.distanceTo(userLatLng);
                 distanceStr = dist > 1000
                     ? `${(dist / 1000).toFixed(2)} km`
@@ -131,10 +132,13 @@ class UI {
             // If we re-enable colors later, we'd calculate hue here
             const dotColor = isMe ? '#2196F3' : '#3388ff';
 
+            // Name fallback logic
+            const displayName = isMe ? (myName || 'Me') : (user.name || 'Unknown User');
+
             li.innerHTML = `
                 <div class="user-dot" style="background-color: ${dotColor}"></div>
                 <div class="user-info">
-                    <span class="user-name">${isMe ? (myName || 'You') : (user.name || 'Unknown User')}</span>
+                    <span class="user-name">${displayName}</span>
                     <span class="user-distance">${distanceStr}</span>
                 </div>
             `;
