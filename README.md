@@ -1,19 +1,23 @@
 # Stay Close
 
-A real-time location tracking application built with Node.js, Express, Socket.io, and Leaflet. Stay Close allows users to share their geolocation in real-time on an interactive map.
+A real-time location tracking application built with Node.js, Express, Socket.io, and Leaflet. Stay Close allows users to share their geolocation in real-time, trace movement paths, and view distances from other connected users.
 
 ## Features
 
-- **Real-Time Location Sharing**: Automatically shares your live location (latitude and longitude) with the server using web sockets.
-- **Interactive Map**: visualizes connected users on an OpenStreetMap interface via Leaflet.js.
-- **Dynamic Updates**: Markers update instantly as users move.
-- **Auto-Cleanup**: Removes markers when a user disconnects.
+- **Real-Time Location Sharing**: Automatically shares your live location with the server using web sockets.
+- **Interactive Map**: Visualizes connected users on an OpenStreetMap interface via Leaflet.js.
+- **Path Tracing**: Draws a specific colored path trail behind each user to visualize their movement history.
+- **Distance Calculator**: Calculates and displays the real-time distance between you and every other user.
+- **User Identity**: Onboarding modal to set a display name upon joining.
+- **Active User Panel**: A draggable translucent panel listing all connected users and their distances.
+- **Dynamic Updates**: Markers and paths update instantly as users move.
+- **Auto-Cleanup**: Removes markers and paths when a user disconnects.
 
 ## Tech Stack
 
 - **Backend**: Node.js, Express.js
 - **Real-Time Communication**: Socket.io
-- **Frontend**: EJS (Templating), CSS, Vanilla JavaScript
+- **Frontend**: EJS (Templating), CSS (Glassmorphism UI), Vanilla JavaScript
 - **Maps API**: Leaflet.js, OpenStreetMap
 
 ## Prerequisites
@@ -48,7 +52,7 @@ Before you begin, ensure you have met the following requirements:
 2.  **Open the application:**
     Visit `http://localhost:3000` in your web browser.
 
-3.  **Grant Permisssions:**
+3.  **Grant Permissions:**
     Allow the browser to access your location when prompted.
 
 ## Project Structure
@@ -57,9 +61,11 @@ Before you begin, ensure you have met the following requirements:
 stay-close/
 ├── public/
 │   ├── css/
-│   │   └── style.css      # Application styles
+│   │   ├── style.css      # Core map styles
+│   │   └── ui.css         # Glassmorphism UI styles
 │   └── js/
-│       └── script.js      # Client-side Socket.io & Leaflet logic
+│       ├── script.js      # Map logic & Socket.io handling
+│       └── ui.js          # UI interactions (Modal, Panel, Dragging)
 ├── views/
 │   └── index.ejs          # Main frontend template
 ├── app.js                 # Server entry point
