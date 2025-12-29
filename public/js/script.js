@@ -1,5 +1,5 @@
 const socket = io();
-const map = L.map("map").setView([0, 0], 16);
+const map = L.map("map").setView([51.505, -0.09], 16);
 
 L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: 'stay-close by Viplav Khode'
@@ -8,40 +8,80 @@ L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
 let myState = null;
 let initialViewSet = false;
 
-if (navigator.geolocation) {
-    navigator.geolocation.watchPosition(
-        (position) => {
-            const { latitude, longitude } = position.coords;
-            myState = { latitude, longitude };
+let myName = "";
 
-            if (!initialViewSet) {
-                map.setView([latitude, longitude], 16);
-                initialViewSet = true;
+// Initialize UI and wait for user to join
+ui.init((name) => {
+    myName = name;
+    startTracking();
+});
+
+function startTracking() {
+    if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                myState = { latitude, longitude };
+
+                if (!initialViewSet) {
+                    map.setView([latitude, longitude], 16);
+                    initialViewSet = true;
+                }
+
+                socket.emit("send-location", { latitude, longitude, name: myName });
+                updateAllDistances();
+            },
+            (error) => {
+                console.error(error);
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
             }
-
-            socket.emit("send-location", { latitude, longitude });
-            updateAllDistances();
-        },
-        (error) => {
-            console.error(error);
-        },
-        {
-            enableHighAccuracy: true,
-            timeout: 5000,
-            maximumAge: 0
-        }
-    );
+        );
+    }
 }
 
 const markers = {};
 const userPaths = {};
 
+function getMarkerIcon(id) {
+    // Generate a consistent color based on the user ID
+    let hash = 0;
+    for (let i = 0; i < id.length; i++) {
+        hash = id.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const hue = Math.abs(hash % 360);
+    const color = `hsl(${hue}, 70%, 50%)`;
+
+    return L.divIcon({
+        className: 'custom-pin',
+        html: `<div style="
+            background-color: ${color};
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 4px rgba(0,0,0,0.5);"></div>`,
+        iconSize: [15, 15],
+        iconAnchor: [7, 7] // Center the dot
+    });
+}
+
 function updatePath(id, latitude, longitude) {
     if (userPaths[id]) {
         userPaths[id].addLatLng([latitude, longitude]);
     } else {
+        // Generate a color matching the marker
+        let hash = 0;
+        for (let i = 0; i < id.length; i++) {
+            hash = id.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const hue = Math.abs(hash % 360);
+
         userPaths[id] = L.polyline([[latitude, longitude]], {
-            color: '#0000FF',
+            color: `hsl(${hue}, 70%, 50%)`,
             weight: 4,
             opacity: 0.7
         }).addTo(map);
@@ -83,7 +123,7 @@ function updateMarkerDistance(id) {
 }
 
 socket.on("receive-location", (data) => {
-    const { id, latitude, longitude } = data;
+    const { id, latitude, longitude, name } = data;
 
     if (id === socket.id) {
         map.setView([latitude, longitude]);
@@ -91,25 +131,32 @@ socket.on("receive-location", (data) => {
 
     if (markers[id]) {
         markers[id].setLatLng([latitude, longitude]);
+        // Update name if it came in and wasn't there before
+        if (name) markers[id].name = name;
     } else {
         markers[id] = L.marker([latitude, longitude]).addTo(map);
+        markers[id].name = name; // Store name on the marker object itself for easy access
     }
 
     updatePath(id, latitude, longitude);
     updateMarkerDistance(id);
+    ui.updateUserList(markers, markers, socket.id, myState);
 });
 
 socket.on("existing-users", (users) => {
     for (const id in users) {
-        const { latitude, longitude } = users[id];
+        const { latitude, longitude, name } = users[id];
         if (markers[id]) {
             markers[id].setLatLng([latitude, longitude]);
+            if (name) markers[id].name = name;
         } else {
             markers[id] = L.marker([latitude, longitude]).addTo(map);
+            markers[id].name = name;
         }
         updatePath(id, latitude, longitude);
         updateMarkerDistance(id);
     }
+    ui.updateUserList(markers, markers, socket.id, myState);
 });
 
 socket.on("user-disconnected", (id) => {
@@ -121,5 +168,6 @@ socket.on("user-disconnected", (id) => {
         map.removeLayer(userPaths[id]);
         delete userPaths[id];
     }
+    ui.updateUserList(markers, markers, socket.id, myState);
 });
 

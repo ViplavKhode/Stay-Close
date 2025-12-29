@@ -1,0 +1,160 @@
+/* Glassmorphism Variables */
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.15);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    --text-color: #333;
+    --primary-color: #4a90e2;
+}
+
+/* Modal Overlay */
+#modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Onboarding Modal */
+.glass-modal {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: var(--glass-shadow);
+    border: 1px solid var(--glass-border);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.glass-modal h2 {
+    margin-bottom: 1.5rem;
+    color: var(--text-color);
+}
+
+.input-group {
+    margin-bottom: 1.5rem;
+}
+
+.glass-input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.glass-input:focus {
+    border-color: var(--primary-color);
+}
+
+.glass-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+    width: 100%;
+}
+
+.glass-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* Connected Users Panel */
+#user-panel {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    width: 250px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.glass-panel {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    cursor: move;
+    /* Indicates draggability */
+}
+
+.panel-title {
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.user-count {
+    background: var(--primary-color);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+}
+
+.user-list {
+    list-style: none;
+}
+
+.user-item {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.user-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.user-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.user-info {
+    flex-grow: 1;
+}
+
+.user-name {
+    font-weight: 500;
+    font-size: 0.9rem;
+    display: block;
+}
+
+.user-distance {
+    font-size: 0.75rem;
+    color: #666;
+}
