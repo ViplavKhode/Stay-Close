@@ -15,6 +15,8 @@ if (navigator.geolocation) {
             timeout: 2000,
             maximumAge: 0
         });
+} else {
+    console.log("Geolocation is not supported by this browser");
 }
 
 const map = L.map("map").setView([0, 0], 16);
