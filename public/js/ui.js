@@ -128,9 +128,8 @@ class UI {
             const li = document.createElement('li');
             li.className = 'user-item';
 
-            // User Dot Color (match the polyline logic if we still had it, currently Blue default)
-            // If we re-enable colors later, we'd calculate hue here
-            const dotColor = isMe ? '#2196F3' : '#3388ff';
+            // User Dot Color from the server-managed marker
+            const dotColor = user.color || (isMe ? '#2196F3' : '#3388ff');
 
             // Name fallback logic
             const displayName = isMe ? (myName || 'Me') : (user.name || 'Unknown User');

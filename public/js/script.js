@@ -46,15 +46,7 @@ function startTracking() {
 const markers = {};
 const userPaths = {};
 
-function getMarkerIcon(id) {
-    // Generate a consistent color based on the user ID
-    let hash = 0;
-    for (let i = 0; i < id.length; i++) {
-        hash = id.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    const hue = Math.abs(hash % 360);
-    const color = `hsl(${hue}, 70%, 50%)`;
-
+function getMarkerIcon(color) {
     return L.divIcon({
         className: 'custom-pin',
         html: `<div style="
@@ -65,23 +57,16 @@ function getMarkerIcon(id) {
             border: 2px solid white;
             box-shadow: 0 0 4px rgba(0,0,0,0.5);"></div>`,
         iconSize: [15, 15],
-        iconAnchor: [7, 7] // Center the dot
+        iconAnchor: [7, 7]
     });
 }
 
-function updatePath(id, latitude, longitude) {
+function updatePath(id, latitude, longitude, color) {
     if (userPaths[id]) {
         userPaths[id].addLatLng([latitude, longitude]);
     } else {
-        // Generate a color matching the marker
-        let hash = 0;
-        for (let i = 0; i < id.length; i++) {
-            hash = id.charCodeAt(i) + ((hash << 5) - hash);
-        }
-        const hue = Math.abs(hash % 360);
-
         userPaths[id] = L.polyline([[latitude, longitude]], {
-            color: `hsl(${hue}, 70%, 50%)`,
+            color: color || '#3388ff', // Use server color or default blue
             weight: 4,
             opacity: 0.7
         }).addTo(map);
@@ -123,7 +108,7 @@ function updateMarkerDistance(id) {
 }
 
 socket.on("receive-location", (data) => {
-    const { id, latitude, longitude, name } = data;
+    const { id, latitude, longitude, name, color } = data;
 
     if (id === socket.id) {
         map.setView([latitude, longitude]);
@@ -131,28 +116,32 @@ socket.on("receive-location", (data) => {
 
     if (markers[id]) {
         markers[id].setLatLng([latitude, longitude]);
-        // Update name if it came in and wasn't there before
         if (name) markers[id].name = name;
+        if (color) markers[id].color = color;
     } else {
-        markers[id] = L.marker([latitude, longitude]).addTo(map);
-        markers[id].name = name; // Store name on the marker object itself for easy access
+        markers[id] = L.marker([latitude, longitude], { icon: getMarkerIcon(color) }).addTo(map);
+        markers[id].name = name;
+        markers[id].color = color;
     }
 
-    updatePath(id, latitude, longitude);
+    updatePath(id, latitude, longitude, color);
     updateMarkerDistance(id);
     ui.updateUserList(markers, markers, socket.id, myState, myName);
 });
 
 socket.on("existing-users", (users) => {
     for (const id in users) {
-        const { latitude, longitude, name } = users[id];
+        const { latitude, longitude, name, color } = users[id];
         if (markers[id]) {
             markers[id].setLatLng([latitude, longitude]);
             if (name) markers[id].name = name;
+            if (color) markers[id].color = color;
         } else {
-            markers[id] = L.marker([latitude, longitude]).addTo(map);
+            markers[id] = L.marker([latitude, longitude], { icon: getMarkerIcon(color) }).addTo(map);
             markers[id].name = name;
+            markers[id].color = color;
         }
+        updatePath(id, latitude, longitude, color);
         updateMarkerDistance(id);
     }
     ui.updateUserList(markers, markers, socket.id, myState, myName);
