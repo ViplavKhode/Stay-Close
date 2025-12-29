@@ -1,4 +1,4 @@
-# Stay Close
+# Stay Close 📍
 
 A real-time location tracking application built with Node.js, Express, Socket.io, and Leaflet. Stay Close allows users to share their geolocation in real-time, trace movement paths, and view distances from other connected users.
 
