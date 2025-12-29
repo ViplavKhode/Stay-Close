@@ -67,10 +67,6 @@ stay-close/
 └── README.md              # Project documentation
 ```
 
-## License
-
-This project is licensed under the ISC License.
-
 ## Author
 
 Viplav Khode
