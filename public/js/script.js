@@ -12,7 +12,7 @@ if (navigator.geolocation) {
         },
         {
             enableHighAccuracy: true,
-            timeout: 2000,
+            timeout: 200000,
             maximumAge: 0
         });
 } else {
@@ -29,12 +29,24 @@ const markers = {};
 
 socket.on("receive-location", (data) => {
     const { id, latitude, longitude } = data;
-    map.setView([latitude, longitude], 16);
-
+    if (id === socket.id) {
+        map.setView([latitude, longitude]);
+    }
     if (markers[id]) {
         markers[id].setLatLng([latitude, longitude]);
     } else {
         markers[id] = L.marker([latitude, longitude]).addTo(map);
+    }
+});
+
+socket.on("existing-users", (users) => {
+    for (const id in users) {
+        const { latitude, longitude } = users[id];
+        if (markers[id]) {
+            markers[id].setLatLng([latitude, longitude]);
+        } else {
+            markers[id] = L.marker([latitude, longitude]).addTo(map);
+        }
     }
 });
 
