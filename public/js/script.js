@@ -12,7 +12,7 @@ if (navigator.geolocation) {
         },
         {
             enableHighAccuracy: true,
-            timeout: 5000,
+            timeout: 2000,
             maximumAge: 0
         });
 }
@@ -20,7 +20,7 @@ if (navigator.geolocation) {
 const map = L.map("map").setView([0, 0], 16);
 
 L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: 'Spot-On by Viplav Khode'
+    attribution: 'stay-close by Viplav Khode'
 }).addTo(map);
 
 const markers = {};

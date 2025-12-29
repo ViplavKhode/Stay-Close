@@ -1,5 +1,5 @@
 {
-  "name": "spot-on",
+  "name": "stay-close",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
@@ -8,15 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ViplavKhode/Spot-On.git"
+    "url": "git+https://github.com/ViplavKhode/stay-close.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ViplavKhode/Spot-On/issues"
+    "url": "https://github.com/ViplavKhode/stay-close/issues"
   },
-  "homepage": "https://github.com/ViplavKhode/Spot-On#readme",
+  "homepage": "https://github.com/ViplavKhode/stay-close#readme",
   "dependencies": {
     "ejs": "^3.1.10",
     "express": "^5.2.1",
