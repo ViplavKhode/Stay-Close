@@ -140,7 +140,7 @@ socket.on("receive-location", (data) => {
 
     updatePath(id, latitude, longitude);
     updateMarkerDistance(id);
-    ui.updateUserList(markers, markers, socket.id, myState);
+    ui.updateUserList(markers, markers, socket.id, myState, myName);
 });
 
 socket.on("existing-users", (users) => {
@@ -153,10 +153,9 @@ socket.on("existing-users", (users) => {
             markers[id] = L.marker([latitude, longitude]).addTo(map);
             markers[id].name = name;
         }
-        updatePath(id, latitude, longitude);
         updateMarkerDistance(id);
     }
-    ui.updateUserList(markers, markers, socket.id, myState);
+    ui.updateUserList(markers, markers, socket.id, myState, myName);
 });
 
 socket.on("user-disconnected", (id) => {
@@ -168,6 +167,6 @@ socket.on("user-disconnected", (id) => {
         map.removeLayer(userPaths[id]);
         delete userPaths[id];
     }
-    ui.updateUserList(markers, markers, socket.id, myState);
+    ui.updateUserList(markers, markers, socket.id, myState, myName);
 });
 

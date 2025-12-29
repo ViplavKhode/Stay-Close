@@ -101,7 +101,7 @@ class UI {
         }
     }
 
-    updateUserList(users, markers, currentId, myState) {
+    updateUserList(users, markers, currentId, myState, myName) {
         this.userList.innerHTML = '';
         const userIds = Object.keys(users);
         this.userCount.textContent = userIds.length;
@@ -134,7 +134,7 @@ class UI {
             li.innerHTML = `
                 <div class="user-dot" style="background-color: ${dotColor}"></div>
                 <div class="user-info">
-                    <span class="user-name">${user.name || 'Unknown User'}</span>
+                    <span class="user-name">${isMe ? (myName || 'You') : (user.name || 'Unknown User')}</span>
                     <span class="user-distance">${distanceStr}</span>
                 </div>
             `;
